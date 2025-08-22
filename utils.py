@@ -19,8 +19,8 @@ def verify_password(stored_password: str, provided_password: str) -> bool:
 
 SMTP_SERVER = "smtp.gmail.com" 
 SMTP_PORT = 587
-EMAIL_ADDRESS = "kolusuprasad2000@gmail.com" 
-EMAIL_PASSWORD = "pibh lmdj ceux laau"  
+EMAIL_ADDRESS = "prasad@gmail.com" 
+EMAIL_PASSWORD = "YOUR PASSWORD"  
 
 def send_email(to_email, subject, body):
     """Sends an email using SMTP."""
