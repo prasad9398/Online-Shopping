@@ -18,7 +18,7 @@ app.secret_key = 'your_very_strong_secret_key_here_change_this'
 DB_CONFIG = {
     'host': 'localhost',
     'user': 'root',
-    'password': 'Prasad@123', 
+    'password': 'YOUR PASSWORD', 
     'database': 'ecommerce_db'
 }
 
@@ -38,8 +38,8 @@ PAYMENT_CONFIG = {
 
 SMTP_SERVER = "smtp.gmail.com" 
 SMTP_PORT = 587
-EMAIL_ADDRESS = "kolusuprasad2000@gmail.com" 
-EMAIL_PASSWORD = "pibh lmdj ceux laau"  
+EMAIL_ADDRESS = "prasad@gmail.com" 
+EMAIL_PASSWORD = "YOUR PASSWORD"  
 
 otp_store = {}
 
