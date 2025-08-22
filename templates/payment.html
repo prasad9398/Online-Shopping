@@ -1,0 +1,234 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="payment-container" style="max-width: 800px; margin: 40px auto; background: white; border-radius: 8px; padding: 30px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);">
+        <h1>Complete Your Payment</h1>
+
+        <!-- Order Details -->
+        <div class="order-details" style="background: #f8f9fa; border-radius: 8px; padding: 20px; margin: 30px 0; text-align: left;">
+            <h2>Order #{{ order.order_id[:8] }}</h2>
+            <p><strong>Amount:</strong> ₹{{ "%.2f"|format(order.total_amount) }}</p>
+            <p><strong>Status:</strong> {{ order.status }}</p>
+            <p><strong>Payment Method:</strong> {{ order.payment_method|title }}</p>
+        </div>
+
+        <!-- Payment Methods -->
+        <div class="payment-methods">
+            {% if order.payment_method == 'gpay' %}
+                <div class="payment-instruction">
+                    <h3>Pay with Google Pay</h3>
+                    <div class="payment-details" style="background: #e9f7fe; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
+                        <p><strong>UPI ID:</strong> {{ payment_details.gpay }}</p>
+                        <p><strong>Amount:</strong> ₹{{ "%.2f"|format(order.total_amount) }}</p>
+                        <p><strong>Remark:</strong> Order #{{ order.order_id[:8] }}</p>
+                    </div>
+                    {% if qr_code_img %}
+                        <div class="qr-code-section" style="text-align: center; margin: 20px 0;">
+                            <h4>Scan QR Code to Pay</h4>
+                            <!-- Option 1: Static QR Code -->
+                            <img src="{{ url_for('static', filename='images/my_qr_code.jpg') }}" 
+                                 alt="GPay QR Code" 
+                                 style="max-width: 200px; height: auto; border: 5px solid #fff; box-shadow: 0 0 10px rgba(0,0,0,0.2);">
+                            <!-- Option 2: Dynamic QR Code -->
+                            <!-- Uncomment this if you're generating QR codes dynamically -->
+                            <!-- <img src="image/png;base64,{{ qr_code_img }}" 
+                                 alt="GPay QR Code" 
+                                 style="max-width: 200px; height: auto; border: 5px solid #fff; box-shadow: 0 0 10px rgba(0,0,0,0.2);"> -->
+                            <p style="margin-top: 10px; font-size: 0.9em; color: #555;">Scan this code with your Google Pay app</p>
+                        </div>
+                    {% endif %}
+                    {% if upi_string %}
+                        <div class="upi-payment" style="text-align: center; margin: 20px 0; background: #d1ecf1; border-radius: 8px; padding: 20px;">
+                            <h4>Or, Pay via UPI App:</h4>
+                            <a href="{{ upi_string }}" target="_blank" class="btn btn-primary">Click to Pay</a>
+                            <div class="payment-details" style="background: #e9f7fe; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
+                                <p><strong>UPI ID:</strong> {{ payment_details.gpay }}</p>
+                                <p><strong>Amount:</strong> ₹{{ "%.2f"|format(order.total_amount) }}</p>
+                                <p><strong>Remark:</strong> Order #{{ order.order_id[:8] }}</p>
+                            </div>
+                            <div class="instructions" style="background: #fff3cd; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
+                                <h4>Manual Steps:</h4>
+                                <ol>
+                                    <li>Open any UPI app (GPay, PhonePe, Paytm, etc.)</li>
+                                    <li>Tap "Scan QR" or "Pay" option</li>
+                                    <li>Enter UPI ID: <strong>{{ payment_details.gpay }}</strong></li>
+                                    <li>Enter amount: ₹{{ "%.2f"|format(order.total_amount) }}</li>
+                                    <li>Add remark: Order #{{ order.order_id[:8] }}</li>
+                                    <li>Complete payment</li>
+                                </ol>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            {% elif order.payment_method == 'phonepe' %}
+                <!-- Similar logic for PhonePe -->
+                <div class="payment-instruction">
+                    <h3>Pay with PhonePe</h3>
+                    <div class="payment-details" style="background: #e9f7fe; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
+                        <p><strong>UPI ID:</strong> {{ payment_details.phonepe }}</p>
+                        <p><strong>Amount:</strong> ₹{{ "%.2f"|format(order.total_amount) }}</p>
+                        <p><strong>Remark:</strong> Order #{{ order.order_id[:8] }}</p>
+                    </div>
+                    {% if qr_code_img %}
+                        <div class="qr-code-section" style="text-align: center; margin: 20px 0;">
+                            <h4>Scan QR Code to Pay</h4>
+                            <!-- Option 1: Static QR Code -->
+                            <img src="{{ url_for('static', filename='images/my_qr_code.jpg') }}" 
+                                 alt="PhonePe QR Code" 
+                                 style="max-width: 200px; height: auto; border: 5px solid #fff; box-shadow: 0 0 10px rgba(0,0,0,0.2);">
+                            <!-- Option 2: Dynamic QR Code -->
+                            <!-- Uncomment this if you're generating QR codes dynamically -->
+                            <!-- <img src="image/png;base64,{{ qr_code_img }}" 
+                                 alt="PhonePe QR Code" 
+                                 style="max-width: 200px; height: auto; border: 5px solid #fff; box-shadow: 0 0 10px rgba(0,0,0,0.2);"> -->
+                            <p style="margin-top: 10px; font-size: 0.9em; color: #555;">Scan this code with your PhonePe app</p>
+                        </div>
+                    {% endif %}
+                    {% if upi_string %}
+                        <div class="upi-payment" style="text-align: center; margin: 20px 0; background: #d1ecf1; border-radius: 8px; padding: 20px;">
+                            <h4>Or, Pay via UPI App:</h4>
+                            <a href="{{ upi_string }}" target="_blank" class="btn btn-primary">Click to Pay</a>
+                            <div class="payment-details" style="background: #e9f7fe; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
+                                <p><strong>UPI ID:</strong> {{ payment_details.phonepe }}</p>
+                                <p><strong>Amount:</strong> ₹{{ "%.2f"|format(order.total_amount) }}</p>
+                                <p><strong>Remark:</strong> Order #{{ order.order_id[:8] }}</p>
+                            </div>
+                            <div class="instructions" style="background: #fff3cd; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
+                                <h4>Manual Steps:</h4>
+                                <ol>
+                                    <li>Open any UPI app (GPay, PhonePe, Paytm, etc.)</li>
+                                    <li>Tap "Scan QR" or "Pay" option</li>
+                                    <li>Enter UPI ID: <strong>{{ payment_details.phonepe }}</strong></li>
+                                    <li>Enter amount: ₹{{ "%.2f"|format(order.total_amount) }}</li>
+                                    <li>Add remark: Order #{{ order.order_id[:8] }}</li>
+                                    <li>Complete payment</li>
+                                </ol>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            {% elif order.payment_method == 'paytm' %}
+                <!-- Similar logic for Paytm -->
+                <div class="payment-instruction">
+                    <h3>Pay with Paytm</h3>
+                    <div class="payment-details" style="background: #e9f7fe; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
+                        <p><strong>UPI ID:</strong> {{ payment_details.paytm }}</p>
+                        <p><strong>Amount:</strong> ₹{{ "%.2f"|format(order.total_amount) }}</p>
+                        <p><strong>Remark:</strong> Order #{{ order.order_id[:8] }}</p>
+                    </div>
+                    {% if qr_code_img %}
+                        <div class="qr-code-section" style="text-align: center; margin: 20px 0;">
+                            <h4>Scan QR Code to Pay</h4>
+                            <!-- Option 1: Static QR Code -->
+                            <img src="{{ url_for('static', filename='images/my_qr_code.jpg') }}" 
+                                 alt="Paytm QR Code" 
+                                 style="max-width: 200px; height: auto; border: 5px solid #fff; box-shadow: 0 0 10px rgba(0,0,0,0.2);">
+                            <!-- Option 2: Dynamic QR Code -->
+                            <!-- Uncomment this if you're generating QR codes dynamically -->
+                            <!-- <img src="image/png;base64,{{ qr_code_img }}" 
+                                 alt="Paytm QR Code" 
+                                 style="max-width: 200px; height: auto; border: 5px solid #fff; box-shadow: 0 0 10px rgba(0,0,0,0.2);"> -->
+                            <p style="margin-top: 10px; font-size: 0.9em; color: #555;">Scan this code with your Paytm app</p>
+                        </div>
+                    {% endif %}
+                    {% if upi_string %}
+                        <div class="upi-payment" style="text-align: center; margin: 20px 0; background: #d1ecf1; border-radius: 8px; padding: 20px;">
+                            <h4>Or, Pay via UPI App:</h4>
+                            <a href="{{ upi_string }}" target="_blank" class="btn btn-primary">Click to Pay</a>
+                            <div class="payment-details" style="background: #e9f7fe; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
+                                <p><strong>UPI ID:</strong> {{ payment_details.paytm }}</p>
+                                <p><strong>Amount:</strong> ₹{{ "%.2f"|format(order.total_amount) }}</p>
+                                <p><strong>Remark:</strong> Order #{{ order.order_id[:8] }}</p>
+                            </div>
+                            <div class="instructions" style="background: #fff3cd; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
+                                <h4>Manual Steps:</h4>
+                                <ol>
+                                    <li>Open any UPI app (GPay, PhonePe, Paytm, etc.)</li>
+                                    <li>Tap "Scan QR" or "Pay" option</li>
+                                    <li>Enter UPI ID: <strong>{{ payment_details.paytm }}</strong></li>
+                                    <li>Enter amount: ₹{{ "%.2f"|format(order.total_amount) }}</li>
+                                    <li>Add remark: Order #{{ order.order_id[:8] }}</li>
+                                    <li>Complete payment</li>
+                                </ol>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            {% elif order.payment_method == 'upi_qr' %}
+                <!-- Logic for UPI QR -->
+                <div class="payment-instruction">
+                    <h3>Pay via UPI</h3>
+                    <div class="payment-details" style="background: #e9f7fe; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
+                        <p><strong>Business UPI ID:</strong> {{ payment_details.business_phone }}@paytm</p>
+                        <p><strong>Amount:</strong> ₹{{ "%.2f"|format(order.total_amount) }}</p>
+                        <p><strong>Remark:</strong> Order #{{ order.order_id[:8] }}</p>
+                    </div>
+                    {% if qr_code_img %}
+                        <div class="qr-code-section" style="text-align: center; margin: 20px 0;">
+                            <h4>Scan QR Code to Pay</h4>
+                            <!-- Option 1: Static QR Code -->
+                            <img src="{{ url_for('static', filename='images/my_qr_code.jpg') }}" 
+                                 alt="UPI QR Code" 
+                                 style="max-width: 200px; height: auto; border: 5px solid #fff; box-shadow: 0 0 10px rgba(0,0,0,0.2);">
+                            <!-- Option 2: Dynamic QR Code -->
+                            <!-- Uncomment this if you're generating QR codes dynamically -->
+                            <!-- <img src="image/png;base64,{{ qr_code_img }}" 
+                                 alt="UPI QR Code" 
+                                 style="max-width: 200px; height: auto; border: 5px solid #fff; box-shadow: 0 0 10px rgba(0,0,0,0.2);"> -->
+                            <p style="margin-top: 10px; font-size: 0.9em; color: #555;">Scan this code with any UPI app</p>
+                        </div>
+                    {% endif %}
+                    {% if upi_string %}
+                        <div class="upi-payment" style="text-align: center; margin: 20px 0; background: #d1ecf1; border-radius: 8px; padding: 20px;">
+                            <h4>Or, Pay via UPI App:</h4>
+                            <a href="{{ upi_string }}" target="_blank" class="btn btn-primary">Click to Pay</a>
+                            <div class="payment-details" style="background: #e9f7fe; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
+                                <p><strong>UPI ID:</strong> {{ payment_details.business_phone }}@paytm</p>
+                                <p><strong>Amount:</strong> ₹{{ "%.2f"|format(order.total_amount) }}</p>
+                                <p><strong>Remark:</strong> Order #{{ order.order_id[:8] }}</p>
+                            </div>
+                            <div class="instructions" style="background: #fff3cd; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
+                                <h4>Manual Steps:</h4>
+                                <ol>
+                                    <li>Open any UPI app (GPay, PhonePe, Paytm, etc.)</li>
+                                    <li>Tap "Scan QR" or "Pay" option</li>
+                                    <li>Enter UPI ID: <strong>{{ payment_details.business_phone }}@paytm</strong></li>
+                                    <li>Enter amount: ₹{{ "%.2f"|format(order.total_amount) }}</li>
+                                    <li>Add remark: Order #{{ order.order_id[:8] }}</li>
+                                    <li>Complete payment</li>
+                                </ol>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            {% elif order.payment_method == 'phone_qr' %}
+                <!-- Logic for Phone QR -->
+                <div class="payment-instruction">
+                    <h3>Contact Business for Payment</h3>
+                    <div class="payment-details" style="background: #e9f7fe; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
+                        <p><strong>Business Phone:</strong> {{ BUSINESS_CONTACT.phone }}</p>
+                        <p><strong>Amount:</strong> ₹{{ "%.2f"|format(order.total_amount) }}</p>
+                        <p><strong>Remark:</strong> Order #{{ order.order_id[:8] }}</p>
+                    </div>
+                    {% if qr_code_img %}
+                        <div class="qr-code-section" style="text-align: center; margin: 20px 0;">
+                            <h4>Scan QR Code to Pay</h4>
+                            <!-- Option 1: Static QR Code -->
+                            <img src="{{ url_for('static', filename='images/my_qr_code.jpg') }}" 
+                                 alt="Phone QR Code" 
+                                 style="max-width: 200px; height: auto; border: 5px solid #fff; box-shadow: 0 0 10px rgba(0,0,0,0.2);">
+                            <!-- Option 2: Dynamic QR Code -->
+                            <!-- Uncomment this if you're generating QR codes dynamically -->
+                            <!-- <img src="image/png;base64,{{ qr_code_img }}" 
+                                 alt="Phone QR Code" 
+                                 style="max-width: 200px; height: auto; border: 5px solid #fff; box-shadow: 0 0 10px rgba(0,0,0,0.2);"> -->
+                            <p style="margin-top: 10px; font-size: 0.9em; color: #555;">Scan this code with your phone</p>
+                        </div>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

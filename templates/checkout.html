@@ -1,0 +1,203 @@
+{% extends "base.html" %}
+
+{% block title %}Checkout{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 style="margin-bottom: 20px; text-align: center;">Checkout</h1>
+
+    <div class="checkout-container" style="display: grid; grid-template-columns: 2fr 1fr; gap: 30px; margin: 30px 0;">
+        <div class="checkout-form" style="background: white; border-radius: 8px; padding: 30px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);">
+            <h2 style="margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid #eee;">Billing Information</h2>
+            
+            <form id="order-form" method="POST" action="{{ url_for('process_order') }}">
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label for="name">Full Name *</label>
+                    <input type="text" id="name" name="name" required style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 1rem;">
+                </div>
+
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label for="email">Email Address *</label>
+                    <input type="email" id="email" name="email" required style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 1rem;">
+                </div>
+
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label for="phone">Phone Number *</label>
+                    <input type="tel" id="phone" name="phone" required style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 1rem;">
+                </div>
+
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label for="address">Address *</label>
+                    <textarea id="address" name="address" rows="3" required style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 1rem;"></textarea>
+                </div>
+
+                <h2 style="margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid #eee;">Payment Method</h2>
+                
+                <!-- Hidden input to store the selected payment method -->
+                <input type="hidden" id="selected-payment-method" name="payment_method" value="">
+                
+                <!-- Payment method selection as icons/buttons -->
+                <div class="payment-methods-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; margin-bottom: 25px;">
+                    <!-- Cash on Delivery -->
+                    <div class="payment-option-card" 
+                         data-method="cod"
+                         style="border: 2px solid #ddd; border-radius: 8px; padding: 15px; text-align: center; cursor: pointer; transition: all 0.3s; background-color: #f9f9f9;">
+                        <div class="payment-icon" style="font-size: 2rem; margin-bottom: 10px;">
+                            <i class="fas fa-money-bill-wave"></i>
+                        </div>
+                        <div class="payment-name" style="font-size: 0.9rem; font-weight: 500;">Cash on Delivery</div>
+                    </div>
+                    
+                    <!-- Google Pay -->
+                    <div class="payment-option-card" 
+                         data-method="gpay"
+                         style="border: 2px solid #ddd; border-radius: 8px; padding: 15px; text-align: center; cursor: pointer; transition: all 0.3s; background-color: #f9f9f9;">
+                        <div class="payment-icon" style="font-size: 2rem; margin-bottom: 10px; color: #5f63f2;">
+                            <i class="fab fa-google-pay"></i>
+                        </div>
+                        <div class="payment-name" style="font-size: 0.9rem; font-weight: 500;">Google Pay</div>
+                    </div>
+                    
+                    <!-- PhonePe -->
+                    <div class="payment-option-card" 
+                         data-method="phonepe"
+                         style="border: 2px solid #ddd; border-radius: 8px; padding: 15px; text-align: center; cursor: pointer; transition: all 0.3s; background-color: #f9f9f9;">
+                        <div class="payment-icon" style="font-size: 2rem; margin-bottom: 10px;">
+                            <!-- PhonePe doesn't have an official FA icon, using a generic mobile icon -->
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                        <div class="payment-name" style="font-size: 0.9rem; font-weight: 500;">PhonePe</div>
+                    </div>
+                    
+                    <!-- Paytm -->
+                    <div class="payment-option-card" 
+                         data-method="paytm"
+                         style="border: 2px solid #ddd; border-radius: 8px; padding: 15px; text-align: center; cursor: pointer; transition: all 0.3s; background-color: #f9f9f9;">
+                        <div class="payment-icon" style="font-size: 2rem; margin-bottom: 10px;">
+                            <!-- Paytm doesn't have an official FA icon, using a wallet icon -->
+                            <i class="fas fa-wallet"></i>
+                        </div>
+                        <div class="payment-name" style="font-size: 0.9rem; font-weight: 500;">Paytm</div>
+                    </div>
+                    
+                    <!-- UPI QR -->
+                    <div class="payment-option-card" 
+                         data-method="upi_qr"
+                         style="border: 2px solid #ddd; border-radius: 8px; padding: 15px; text-align: center; cursor: pointer; transition: all 0.3s; background-color: #f9f9f9;">
+                        <div class="payment-icon" style="font-size: 2rem; margin-bottom: 10px;">
+                            <i class="fas fa-qrcode"></i>
+                        </div>
+                        <div class="payment-name" style="font-size: 0.9rem; font-weight: 500;">Scan UPI QR</div>
+                    </div>
+                    
+                    <!-- Phone QR -->
+                    <div class="payment-option-card" 
+                         data-method="phone_qr"
+                         style="border: 2px solid #ddd; border-radius: 8px; padding: 15px; text-align: center; cursor: pointer; transition: all 0.3s; background-color: #f9f9f9;">
+                        <div class="payment-icon" style="font-size: 2rem; margin-bottom: 10px;">
+                            <i class="fas fa-phone"></i>
+                        </div>
+                        <div class="payment-name" style="font-size: 0.9rem; font-weight: 500;">Call to Pay</div>
+                    </div>
+                </div>
+                
+                <!-- Display selected payment method -->
+                <div class="selected-payment-info" style="margin-bottom: 20px; padding: 10px; background-color: #e9f7fe; border-radius: 4px; display: none;">
+                    <strong>Selected Payment Method:</strong> <span id="selected-method-text"></span>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-large" style="padding: 15px 40px; font-size: 1.1rem; width: 100%;">Place Order</button>
+            </form>
+        </div>
+
+        <!-- Order Summary Sidebar -->
+        <div class="order-summary" style="background: white; border-radius: 8px; padding: 25px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); position: sticky; top: 100px;">
+            <h2 style="margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid #eee;">Order Summary</h2>
+            <div class="summary-items" style="margin-bottom: 20px;">
+                {% for item in cart_items.values() %}
+                <div class="summary-item" style="display: flex; justify-content: space-between; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #f1f3f5;">
+                    <span>{{ item.name }} x {{ item.quantity }}</span>
+                    <span>₹{{ "%.2f"|format(item.price * item.quantity) }}</span>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="summary-total" style="display: flex; justify-content: space-between; font-size: 1.2rem; font-weight: 700; padding-top: 15px; border-top: 1px solid #eee;">
+                <span>Total:</span>
+                <span>₹{{ "%.2f"|format(total) }}</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Handle payment method selection
+    document.addEventListener('DOMContentLoaded', function() {
+        const paymentCards = document.querySelectorAll('.payment-option-card');
+        const hiddenInput = document.getElementById('selected-payment-method');
+        const selectedInfo = document.querySelector('.selected-payment-info');
+        const selectedText = document.getElementById('selected-method-text');
+        const form = document.getElementById('order-form');
+        
+        // Add click event to each payment card
+        paymentCards.forEach(card => {
+            card.addEventListener('click', function() {
+                // Remove selected class from all cards
+                paymentCards.forEach(c => {
+                    c.style.borderColor = '#ddd';
+                    c.style.backgroundColor = '#f9f9f9';
+                    c.style.transform = '';
+                });
+                
+                // Add selected class to clicked card
+                this.style.borderColor = '#007bff';
+                this.style.backgroundColor = '#e9f7fe';
+                this.style.transform = 'translateY(-3px)';
+                
+                // Update hidden input value
+                const method = this.getAttribute('data-method');
+                hiddenInput.value = method;
+                
+                // Update display text
+                const methodName = this.querySelector('.payment-name').textContent;
+                selectedText.textContent = methodName;
+                selectedInfo.style.display = 'block';
+            });
+        });
+        
+        // Form validation
+        form.addEventListener('submit', function(e) {
+            if (!hiddenInput.value) {
+                e.preventDefault();
+                alert('Please select a payment method.');
+                return false;
+            }
+            
+            // Simple validation for other fields
+            const requiredFields = this.querySelectorAll('[required]');
+            let isValid = true;
+
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    field.style.borderColor = 'red';
+                    isValid = false;
+                } else {
+                    field.style.borderColor = '#ddd';
+                }
+            });
+
+            if (!isValid) {
+                e.preventDefault();
+                alert('Please fill in all required fields.');
+            }
+        });
+    });
+</script>
+
+<style>
+    /* Add a bit of extra styling for the payment cards on hover */
+    .payment-option-card:hover {
+        background-color: #f0f8ff !important; /* Use !important to override inline styles */
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="product-detail" style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin: 40px 0;">
+        <div class="product-image-large" style="border-radius: 8px; overflow: hidden; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);">
+            <img src="{{ url_for('static', filename='images/' + product.image) }}" alt="{{ product.name }}" style="width: 100%; display: block;">
+        </div>
+        <div class="product-info-large">
+            <h1>{{ product.name }}</h1>
+            <p class="product-description" style="color: #555; margin-bottom: 20px; line-height: 1.7;">{{ product.description }}</p>
+            <div class="product-price" style="font-size: 2rem; font-weight: 700; color: #007bff; margin-bottom: 25px;">₹{{ "%.2f"|format(product.price) }}</div>
+
+            <div class="product-options">
+                <div class="quantity-selector" style="margin-bottom: 25px;">
+                    <label for="quantity" style="display: block; margin-bottom: 8px; font-weight: 500;">Quantity:</label>
+                    <select id="quantity" name="quantity" style="padding: 10px; border: 1px solid #ddd; border-radius: 4px; width: 100px;">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                </div>
+
+                <form method="POST" action="{{ url_for('add_to_cart') }}">
+                    <input type="hidden" name="product_id" value="{{ product.id }}">
+                    <input type="hidden" name="quantity" id="hidden-quantity" value="1">
+                    <button type="submit" class="btn btn-primary btn-large" style="padding: 15px 40px; font-size: 1.1rem; width: 100%; margin-bottom: 25px;">Add to Cart</button>
+                </form>
+            </div>
+
+            <div class="product-meta">
+                <p style="margin-bottom: 10px;"><strong>Category:</strong> {{ product.category }}</p>
+                <p style="margin-bottom: 10px;"><strong>Availability:</strong> In Stock</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('quantity').addEventListener('change', function() {
+    document.getElementById('hidden-quantity').value = this.value;
+});
+</script>
+{% endblock %}
